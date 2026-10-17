@@ -44,8 +44,8 @@ class DataIngestion:
         except Exception as e:
             raise OptiPriceException(e, sys)
 
-if __name__ == "__main__":
-    obj = DataIngestion()
-    train_data, test_data = obj.start_data_ingestion()
-    print("Train path:", train_data)
-    print("Test path:", test_data)
+# if __name__ == "__main__":
+#     obj = DataIngestion()
+#     train_data, test_data = obj.start_data_ingestion()
+#     print("Train path:", train_data)
+#     print("Test path:", test_data)

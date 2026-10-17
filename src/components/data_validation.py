@@ -55,8 +55,8 @@ class DataValidation:
         except Exception as e:
             raise OptiPriceException(e, sys)
 
-if __name__ == "__main__":
-    validator = DataValidation()
-    test_file = os.path.join("artifacts", "train.csv")
-    is_valid = validator.validate_schema(test_file)
-    print(f"Schema Validation Result: {is_valid}")
+# if __name__ == "__main__":
+#     validator = DataValidation()
+#     test_file = os.path.join("artifacts", "train.csv")
+#     is_valid = validator.validate_schema(test_file)
+#     print(f"Schema Validation Result: {is_valid}")
