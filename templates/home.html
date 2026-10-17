@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiPrice Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>OptiPrice: Dynamic Pricing Engine</h1>
+        <p class="subtitle">Real-time revenue optimization powered by CatBoost regression</p>
+
+        <form action="/predict" method="POST" class="form-grid" autocomplete="off">
+            <div class="form-group">
+                <label>Product Category</label>
+                <select name="product_category" required>
+                    <option value="" disabled {% if not prev_category %}selected{% endif %}>Select Category</option>
+                    <option value="Electronics" {% if prev_category == 'Electronics' %}selected{% endif %}>Electronics</option>
+                    <option value="Fashion" {% if prev_category == 'Fashion' %}selected{% endif %}>Fashion</option>
+                    <option value="Home & Kitchen" {% if prev_category == 'Home & Kitchen' %}selected{% endif %}>Home & Kitchen</option>
+                    <option value="Fitness" {% if prev_category == 'Fitness' %}selected{% endif %}>Fitness</option>
+                    <option value="Books" {% if prev_category == 'Books' %}selected{% endif %}>Books</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Base Cost ($)</label>
+                <input type="number" step="0.01" min="1.0" max="2000.0" name="base_cost" placeholder="e.g. 120.00" value="{{ prev_base_cost or '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Competitor Price ($)</label>
+                <input type="number" step="0.01" min="1.0" max="3000.0" name="competitor_price" placeholder="e.g. 155.00" value="{{ prev_comp_price or '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Inventory Units in Stock</label>
+                <input type="number" min="0" max="10000" name="inventory_level" placeholder="e.g. 85" value="{{ prev_inventory or '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Demand Surge Score (0.5 - 3.0)</label>
+                <input type="number" step="0.01" min="0.5" max="4.5" name="demand_score" placeholder="e.g. 1.25" value="{{ prev_demand or '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Customer Rating (1.0 - 5.0)</label>
+                <input type="number" step="0.1" min="1.0" max="5.0" name="customer_rating" placeholder="e.g. 4.2" value="{{ prev_rating or '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Day Type</label>
+                <select name="is_weekend">
+                    <option value="0" {% if prev_weekend == 0 %}selected{% endif %}>Weekday (Regular)</option>
+                    <option value="1" {% if prev_weekend == 1 %}selected{% endif %}>Weekend (Surge Traffic)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Shipping Window</label>
+                <select name="shipping_days">
+                    <option value="1" {% if prev_shipping == 1 %}selected{% endif %}>1 Day (Express)</option>
+                    <option value="2" {% if prev_shipping == 2 %}selected{% endif %}>2 Days</option>
+                    <option value="3" {% if prev_shipping == 3 or not prev_shipping %}selected{% endif %}>3 Days (Standard)</option>
+                    <option value="5" {% if prev_shipping == 5 %}selected{% endif %}>5 Days</option>
+                    <option value="7" {% if prev_shipping == 7 %}selected{% endif %}>7 Days</option>
+                </select>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn-submit">Calculate Optimal Price</button>
+                <button type="button" class="btn-reset" onclick="window.location.href='/'">Reset Form</button>
+            </div>
+        </form>
+
+        {% if optimal_price %}
+        <div class="results-card">
+            <div style="font-size: 13px; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Optimal Target Price</div>
+            <div class="price-badge">{{ optimal_price }}</div>
+            <div class="meta-row">
+                <span>Base Cost: <strong>{{ base_cost }}</strong></span>
+                <span>Gross Margin: <strong>{{ margin }}</strong></span>
+            </div>
+            <div class="insight-box">
+                {{ insight }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
