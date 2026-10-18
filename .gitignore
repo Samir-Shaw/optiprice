@@ -14,3 +14,7 @@ logs/
 Thumbs.db
 
 catboost_info/
+
+mlruns/
+
+mlflow.db
