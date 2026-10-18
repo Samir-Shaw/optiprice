@@ -8,3 +8,4 @@ seaborn
 dill
 flask
 mlflow
+pip install gunicorn
